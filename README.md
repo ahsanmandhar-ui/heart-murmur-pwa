@@ -10,7 +10,6 @@ A multi-agent heart sound detector using the **Eheart_sound_by_Ahsan_Mandhar.onn
 - **Type:** Audio Spectrogram Transformer (AST) — ViT-style encoder
 - **Dataset:** CirCor DigiScope Phonocardiogram Dataset
 - **Classes:** 0=Absent, 1=Murmur, 2=Unknown
-- **Claimed validation loss:** 0.4385
 - **Precision:** INT8 (ONNX)
 - **Input:** `[1, 1, 80, 1001]` log-mel spectrogram
 - **Patch size:** 16×16 → 310 patches + 1 CLS token = 311 tokens
