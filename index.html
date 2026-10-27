@@ -72,7 +72,8 @@
   <script type="module">
     import { initTheme, toggleTheme, initAmbient } from './js/ui.js';
     import { initA11y } from './js/a11y.js';
-    import { decodeFileTo16k, audioToMel } from './js/audio_capture.js';
+    import { decodeFileTo16k } from './js/audio_capture.js';
+    import { audioToMel } from './js/dsp_m2d.js';
     import { loadModel } from './js/backend.js';
     import { WaveformCanvas, MelHeatmap } from './js/viz.js';
     import { projectPCA } from './js/probe.js';
