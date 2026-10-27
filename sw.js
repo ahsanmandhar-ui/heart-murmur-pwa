@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'm2d-v4';
+const CACHE_VERSION = 'm2d-v5';
 const APP_SHELL = ['index.html','manifest.json','css/app.css','css/tokens.css'];
 self.addEventListener('install', (e) => {
   e.waitUntil(caches.open(CACHE_VERSION).then((c) => c.addAll(APP_SHELL)));
@@ -9,13 +9,7 @@ self.addEventListener('activate', (e) => {
 });
 self.addEventListener('fetch', (e) => {
   const url = new URL(e.request.url);
-  if (url.pathname.includes('/models/')) {
-    e.respondWith(caches.match(e.request).then((r) => r || fetch(e.request).then((res) => {
-      const copy = res.clone();
-      caches.open(CACHE_VERSION).then((c) => c.put(e.request, copy));
-      return res;
-    })));
-    return;
-  }
+  // Do not intercept model downloads; let the app handle caching.
+  if (url.pathname.includes('/models/')) return;
   e.respondWith(caches.match(e.request).then((r) => r || fetch(e.request)));
 });
