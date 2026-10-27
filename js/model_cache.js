@@ -56,23 +56,23 @@ export async function setCachedModel(bytes) {
 }
 
 export async function fetchModelWithProgress(onProgress) {
-  const res = await fetch(MODEL_URL);
-  if (!res.ok) throw new Error(`model fetch failed: ${res.status}`);
-  const total = Number(res.headers.get('content-length') || 0);
-  const reader = res.body.getReader();
-  const chunks = [];
-  let received = 0;
-  while (true) {
-    const { done, value } = await reader.read();
-    if (done) break;
-    chunks.push(value);
-    received += value.length;
-    if (onProgress) onProgress(received, total);
-  }
-  const buf = new Uint8Array(received);
-  let off = 0;
-  for (const c of chunks) { buf.set(c, off); off += c.length; }
-  return buf;
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open('GET', MODEL_URL, true);
+    xhr.responseType = 'arraybuffer';
+    xhr.onprogress = (e) => {
+      if (onProgress) onProgress(e.loaded, e.total || 0);
+    };
+    xhr.onload = () => {
+      if (xhr.status >= 200 && xhr.status < 300) {
+        resolve(new Uint8Array(xhr.response));
+      } else {
+        reject(new Error(`model fetch failed: ${xhr.status}`));
+      }
+    };
+    xhr.onerror = () => reject(new Error('network error'));
+    xhr.send();
+  });
 }
 
 export async function getModel(onProgress) {
