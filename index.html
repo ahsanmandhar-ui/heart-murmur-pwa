@@ -4,136 +4,121 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>M2D Heart-Murmur PWA</title>
-  <link rel="manifest" href="/manifest.json" />
-  <link rel="stylesheet" href="/css/tokens.css" />
-  <link rel="stylesheet" href="/css/app.css" />
+  <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#4f46e5" />
   <style>
-    .download-card{display:flex;flex-direction:column;gap:.75rem;}
-    .progress{width:100%;height:12px;border-radius:999px;background:rgba(255,255,255,.15);overflow:hidden;}
-    .progress-bar{height:100%;width:0%;background:linear-gradient(90deg,#4f46e5,#06b6d4);transition:width .2s;}
-    .status{font-size:.9rem;opacity:.85;}
+    :root { --bg:#0b1020; --card:rgba(255,255,255,0.06); --border:rgba(255,255,255,0.12); --text:#e5e7eb; --muted:#9ca3af; --primary:#6366f1; --primary-2:#06b6d4; }
+    * { box-sizing:border-box; }
+    body { margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif; background:radial-gradient(1200px 600px at 20% -10%, #1e293b, var(--bg)); color:var(--text); min-height:100vh; }
+    .shell { max-width:980px; margin:0 auto; padding:24px; }
+    header { display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; }
+    h1 { margin:0; font-size:1.4rem; }
+    .grid { display:grid; gap:16px; grid-template-columns:1fr; }
+    @media (min-width:860px){ .grid{grid-template-columns:1fr 1fr;} }
+    .card { background:var(--card); border:1px solid var(--border); border-radius:16px; padding:20px; backdrop-filter:blur(8px); }
+    .title { font-size:1.1rem; font-weight:600; margin:0 0 8px; }
+    .muted { color:var(--muted); font-size:0.9rem; }
+    .btn { border:0; border-radius:12px; padding:12px 16px; font-weight:600; background:linear-gradient(90deg,var(--primary),var(--primary-2)); color:white; cursor:pointer; width:100%; }
+    .btn:disabled { opacity:0.6; cursor:not-allowed; }
+    .progress { height:12px; background:rgba(255,255,255,0.12); border-radius:999px; overflow:hidden; margin:12px 0; }
+    .progress-bar { height:100%; width:0%; background:linear-gradient(90deg,var(--primary),var(--primary-2)); transition:width 0.2s; }
+    .status { font-size:0.9rem; color:var(--muted); min-height:1.2em; }
+    .result { font-size:1.1rem; font-weight:600; margin-top:8px; }
+    .metrics { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:12px; }
+    .metric { background:rgba(255,255,255,0.05); border-radius:10px; padding:10px; }
+    .metric .k { font-size:0.75rem; color:var(--muted); }
+    .metric .v { font-size:1rem; font-weight:600; }
+    canvas { width:100%; border-radius:8px; background:rgba(0,0,0,0.25); }
   </style>
 </head>
 <body>
-  <div class="app-shell">
-    <header class="glass" style="padding:1rem;display:flex;justify-content:space-between;align-items:center;">
-      <h1 style="margin:0;font-size:1.2rem;">M2D Heart-Murmur</h1>
-      <button id="themeToggle" class="btn">Theme</button>
+  <div class="shell">
+    <header>
+      <h1>M2D Heart-Murmur PWA</h1>
+      <button id="themeToggle" class="btn" style="width:auto;padding:8px 12px;">Theme</button>
     </header>
-    <main style="margin-top:1rem;">
-      <div class="glass card download-card">
-        <p>Model is large (~87 MB). Download it first; progress is shown below.</p>
+    <div class="grid">
+      <section class="card">
+        <p class="title">Model Download</p>
+        <p class="muted">Large model (~83 MB). Download once; cached in browser.</p>
         <button id="downloadBtn" class="btn">Download model into browser</button>
         <div class="progress"><div id="progressBar" class="progress-bar"></div></div>
         <div id="downloadStatus" class="status">Not downloaded.</div>
-      </div>
-      <div class="glass card" style="margin-top:1rem;">
-        <p>Run inference on a heart sound file.</p>
-        <input type="file" id="audioFile" accept="audio/*" />
+        <div id="downloadPercent" class="status"></div>
+      </section>
+      <section class="card">
+        <p class="title">Analyze Heart Sound</p>
+        <input type="file" id="audioFile" accept="audio/*" style="width:100%;margin:8px 0;" />
         <button id="runBtn" class="btn">Analyze</button>
-        <div id="result" class="status">No result yet.</div>
-        <canvas id="waveform" width="320" height="80" style="width:100%;margin-top:.5rem;"></canvas>
-        <canvas id="mel" width="320" height="80" style="width:100%;margin-top:.5rem;"></canvas>
-        <canvas id="gauge" width="120" height="60" style="margin-top:.5rem;"></canvas>
-        <canvas id="scatter" width="200" height="200" style="margin-top:.5rem;"></canvas>
-      </div>
-    </main>
+        <div id="result" class="result">No result yet.</div>
+        <div class="metrics">
+          <div class="metric"><div class="k">Probability</div><div class="v" id="mProb">-</div></div>
+          <div class="metric"><div class="k">Logit</div><div class="v" id="mLogit">-</div></div>
+          <div class="metric"><div class="k">Abstain</div><div class="v" id="mAbstain">-</div></div>
+        </div>
+        <canvas id="waveform" width="320" height="80"></canvas>
+        <canvas id="mel" width="320" height="80"></canvas>
+      </section>
+    </div>
+    <section class="card" style="margin-top:16px;">
+      <p class="title">Safety</p>
+      <p class="muted">Outputs are decision support only. Not a medical diagnosis.</p>
+    </section>
   </div>
   <script type="module">
-    import { initTheme, toggleTheme, initAmbient, magneticButton } from 'js/ui.js';
+    import { initTheme, toggleTheme, initAmbient } from 'js/ui.js';
     import { initA11y } from 'js/a11y.js';
     import { decodeFileTo16k, audioToMel } from 'js/audio_capture.js';
     import { loadModel } from 'js/backend.js';
-    import { WaveformCanvas, MelHeatmap, ConfidenceGauge, EmbeddingScatter } from 'js/viz.js';
-import { projectPCA } from 'js/probe.js';
-    initTheme();
-    initAmbient();
-    initA11y();
+    import { WaveformCanvas, MelHeatmap } from 'js/viz.js';
+    import { projectPCA } from 'js/probe.js';
+    initTheme(); initAmbient(); initA11y();
     document.getElementById('themeToggle').addEventListener('click', toggleTheme);
-    // magneticButton removed; search button no longer exists
-
-    const MODEL_URL = 'models/Eheart_sound_by_Ahsan_Mandhar.onnx';
-    const btn = document.getElementById('downloadBtn');
-    const bar = document.getElementById('progressBar');
-    const status = document.getElementById('downloadStatus');
-    const runBtn = document.getElementById('runBtn');
-    const result = document.getElementById('result');
-    const waveform = new WaveformCanvas(document.getElementById('waveform'));
-    const melHeat = new MelHeatmap(document.getElementById('mel'));
-    const gauge = new ConfidenceGauge(document.getElementById('gauge'));
-    const scatter = new EmbeddingScatter(document.getElementById('scatter'));
-    let pca = null;
-    async function loadPCA() { if (!pca) pca = await fetch('pca.json').then(r=>r.json()); return pca; }
-    let session = null;
-    let probe = null;
-
-    async function ensureSession() {
-      return session;
-    }
-
-    async function loadProbe() {
-      if (!probe) probe = await fetch('probe.json').then(r => r.json());
-      return probe;
-    }
-
-    // download + cache + load
-    async function downloadAndCache() {
-      btn.disabled = true;
-      status.textContent = 'Starting download...';
+    const btn=document.getElementById('downloadBtn');
+    const bar=document.getElementById('progressBar');
+    const status=document.getElementById('downloadStatus');
+    const pct=document.getElementById('downloadPercent');
+    const runBtn=document.getElementById('runBtn');
+    const result=document.getElementById('result');
+    const waveform=new WaveformCanvas(document.getElementById('waveform'));
+    const melHeat=new MelHeatmap(document.getElementById('mel'));
+    let session=null, probe=null;
+    async function loadProbe(){ if(!probe) probe=await fetch('probe.json').then(r=>r.json()); return probe; }
+    async function downloadAndCache(){
+      btn.disabled=true; status.textContent='Starting download...';
       try {
-        session = await loadModel((p) => {
-          const pct = (p * 100).toFixed(1);
-          bar.style.width = pct + '%';
-          status.textContent = `Downloading... ${pct}%`;
-        });
-        bar.style.width = '100%';
-        status.textContent = 'Model ready.';
-      } catch (e) {
-        status.textContent = 'Error: ' + e.message;
-      } finally {
-        btn.disabled = false;
-      }
+        session=await loadModel((p)=>{ const percent=(p*100).toFixed(1); bar.style.width=percent+'%'; pct.textContent=percent+'%'; status.textContent=`Downloading... ${percent}%`; });
+        bar.style.width='100%'; pct.textContent='100%'; status.textContent='Model ready.';
+      } catch(e){ status.textContent='Error: '+e.message; }
+      finally { btn.disabled=false; }
     }
-
     btn.addEventListener('click', downloadAndCache);
-
-    runBtn.addEventListener('click', async () => {
-      const file = document.getElementById('audioFile').files[0];
-      if (!file) { result.textContent = 'Select an audio file first.'; return; }
+    runBtn.addEventListener('click', async ()=>{
+      const file=document.getElementById('audioFile').files[0];
+      if(!file){ result.textContent='Select an audio file first.'; return; }
       try {
-        result.textContent = 'Decoding audio...';
-        const samples = await decodeFileTo16k(file);
+        result.textContent='Decoding audio...';
+        const samples=await decodeFileTo16k(file);
         waveform.setData(samples);
-        const mel = audioToMel(samples);
+        const mel=audioToMel(samples);
         melHeat.setData(mel);
-        result.textContent = 'Loading model...';
-        if (!session) {
-          try { session = await loadModel(); } catch (e) { result.textContent = 'Model not cached. Download first.'; return; }
-        }
-        if (!session) { result.textContent = 'Model not cached. Download first.'; return; }
+        result.textContent='Loading model...';
+        if(!session){ try{ session=await loadModel(); }catch(e){ result.textContent='Model not cached. Download first.'; return; } }
+        if(!session){ result.textContent='Model not cached. Download first.'; return; }
         await loadProbe();
-        result.textContent = 'Running inference...';
-        const out = await analyzeAudio(samples, session, probe);
-        result.textContent = `${out.label} (p=${out.p.toFixed(3)}, logit=${out.logit.toFixed(3)})`;
-        gauge.setValue(out.p);
-        try { const pcaData = await loadPCA(); scatter.setTraining(pcaData.points || []); const xy = projectPCA(out.embedding, pcaData); scatter.setCurrent(xy); } catch(e){}
-      } catch (e) {
-        result.textContent = 'Error: ' + e.message;
-      }
+        result.textContent='Running inference...';
+        const { analyzeAudio } = await import('js/inference.js');
+        const out=await analyzeAudio(samples, session, probe);
+        result.textContent=`${out.label} (p=${out.p.toFixed(3)})`;
+        document.getElementById('mProb').textContent=out.p.toFixed(3);
+        document.getElementById('mLogit').textContent=out.logit.toFixed(3);
+        document.getElementById('mAbstain').textContent=out.abstain?'Yes':'No';
+      } catch(e){ result.textContent='Error: '+e.message; }
     });
-
-    // try to load cached model on startup
-    (async () => {
-      try { session = await loadModel(); if (session) status.textContent = 'Model ready (cached).'; } catch {}
-    })();
+    (async ()=>{ try{ session=await loadModel(); if(session) status.textContent='Model ready (cached).'; }catch{} })();
   </script>
   <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('sw.js').catch(console.error);
-      });
-    }
+    if('serviceWorker' in navigator){ window.addEventListener('load',()=>{ navigator.serviceWorker.register('sw.js').catch(console.error); }); }
   </script>
 </body>
 </html>
