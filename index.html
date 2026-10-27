@@ -87,7 +87,12 @@
     async function downloadAndCache(){
       btn.disabled=true; status.textContent='Starting download...';
       try {
-        session=await loadModel((p)=>{ const percent=(p*100).toFixed(1); bar.style.width=percent+'%'; pct.textContent=percent+'%'; status.textContent=`Downloading... ${percent}%`; });
+        session=await loadModel((received,total)=>{
+          const percent = total ? ((received/total)*100).toFixed(1) : '0';
+          bar.style.width = (total ? (received/total*100) : 0) + '%';
+          pct.textContent = total ? percent + '%' : (received/1e6).toFixed(1)+' MB';
+          status.textContent = total ? `Downloading... ${percent}%` : `Downloading... ${(received/1e6).toFixed(1)} MB`;
+        });
         bar.style.width='100%'; pct.textContent='100%'; status.textContent='Model ready.';
       } catch(e){ status.textContent='Error: '+e.message; }
       finally { btn.disabled=false; }

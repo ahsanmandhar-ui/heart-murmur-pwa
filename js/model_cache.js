@@ -58,7 +58,8 @@ export async function fetchModelWithProgress(onProgress) {
     if (done) break;
     chunks.push(value);
     received += value.length;
-    if (onProgress && total) onProgress(received / total);
+    if (onProgress) onProgress(received, total);
+PY
   }
   const buf = new Uint8Array(received);
   let off = 0;
@@ -73,4 +74,3 @@ export async function getModel(onProgress) {
     await setCachedModel(bytes);
   }
   return bytes;
-}
