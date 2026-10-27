@@ -67,12 +67,12 @@
     </section>
   </div>
   <script type="module">
-    import { initTheme, toggleTheme, initAmbient } from 'js/ui.js';
-    import { initA11y } from 'js/a11y.js';
-    import { decodeFileTo16k, audioToMel } from 'js/audio_capture.js';
-    import { loadModel } from 'js/backend.js';
-    import { WaveformCanvas, MelHeatmap } from 'js/viz.js';
-    import { projectPCA } from 'js/probe.js';
+    import { initTheme, toggleTheme, initAmbient } from './js/ui.js';
+    import { initA11y } from './js/a11y.js';
+    import { decodeFileTo16k, audioToMel } from './js/audio_capture.js';
+    import { loadModel } from './js/backend.js';
+    import { WaveformCanvas, MelHeatmap } from './js/viz.js';
+    import { projectPCA } from './js/probe.js';
     initTheme(); initAmbient(); initA11y();
     document.getElementById('themeToggle').addEventListener('click', toggleTheme);
     const btn=document.getElementById('downloadBtn');
@@ -113,7 +113,7 @@
         if(!session){ result.textContent='Model not cached. Download first.'; return; }
         await loadProbe();
         result.textContent='Running inference...';
-        const { analyzeAudio } = await import('js/inference.js');
+        const { analyzeAudio } = await import('./js/inference.js');
         const out=await analyzeAudio(samples, session, probe);
         result.textContent=`${out.label} (p=${out.p.toFixed(3)})`;
         document.getElementById('mProb').textContent=out.p.toFixed(3);
