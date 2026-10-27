@@ -1,5 +1,5 @@
 const MODEL_HASH = 'int8-dynamic-v1';
-const MODEL_URL = 'https://cdn.jsdelivr.net/gh/ahsanmandhar-ui/heart-murmur-pwa@main/models/Eheart_sound_by_Ahsan_Mandhar.onnx';
+const MODEL_URL = 'models/Eheart_sound_by_Ahsan_Mandhar.onnx';
 const CACHE_NAME = 'm2d-models-v1';
 
 export async function getCachedModel() {
