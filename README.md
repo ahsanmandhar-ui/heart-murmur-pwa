@@ -1,15 +1,21 @@
 # M2D Heart-Murmur PWA
 
-Browser-based heart-murmur screening demo using an ONNX embedding model + linear probe.
+![M2D Heart-Murmur Logo](logo.svg)
 
-## Run locally
-Serve the `pwa/` folder with any static server, then open `index.html`.
+A browser-based heart-murmur screening demo using an ONNX embedding model and a linear probe.
 
-## Deploy on GitHub Pages
-1. Create a GitHub repository.
-2. Push this folder's contents to the repository.
-3. In GitHub: Settings → Pages → Deploy from branch (`main` / root).
-4. Open the published URL.
+## Live Demo
+https://ahsanmandhar-ui.github.io/heart-murmur-pwa/
+
+## Features
+- Runs fully in the browser
+- Local model caching
+- Download progress display
+- Audio analysis with waveform and mel views
+- Decision-support output with abstention
 
 ## License
-All rights reserved. No permission is granted to copy, reproduce, distribute, modify, or use this software, model, or associated files for any purpose without prior written permission from the author. Duplicating, reproducing, or any other use is not permitted without explicit authorization.
+All rights reserved. No permission is granted to copy, reproduce, distribute, modify, or use this software, model, or associated files without prior written permission.
+
+## Contact
+Email: ahsanmandhar@gmail.com
