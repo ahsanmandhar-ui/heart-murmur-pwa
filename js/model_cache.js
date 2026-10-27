@@ -3,20 +3,29 @@ const MODEL_URL = 'models/Eheart_sound_by_Ahsan_Mandhar.onnx';
 const CACHE_NAME = 'm2d-models-v1';
 
 export async function getCachedModel() {
+  const EXPECTED_SIZE = 87085683;
   // 1) OPFS
   try {
     const root = await navigator.storage?.getDirectory?.();
     if (root) {
       const fh = await root.getFileHandle(`${MODEL_HASH}.onnx`);
       const file = await fh.getFile();
-      return new Uint8Array(await file.arrayBuffer());
+      if (file.size === EXPECTED_SIZE) {
+        return new Uint8Array(await file.arrayBuffer());
+      }
+      // remove invalid/partial
+      try { await root.removeEntry(`${MODEL_HASH}.onnx`); } catch {}
     }
   } catch {}
   // 2) Cache API
   try {
     const cache = await caches.open(CACHE_NAME);
     const res = await cache.match(MODEL_URL);
-    if (res) return new Uint8Array(await res.arrayBuffer());
+    if (res) {
+      const buf = new Uint8Array(await res.arrayBuffer());
+      if (buf.length === EXPECTED_SIZE) return buf;
+      await cache.delete(MODEL_URL);
+    }
   } catch {}
   return null;
 }
