@@ -6,8 +6,6 @@ A multi-agent heart sound detector using the **Eheart_sound_by_Ahsan_Mandhar.onn
 
 ## Model
 - **Model file:** `Eheart_sound_by_Ahsan_Mandhar.onnx`
-- **Base model:** `rajnish612/ast-heart-murmur-classifier` (MIT, ~86.2M params)
-- **Base pretrained:** `MIT/ast-finetuned-audioset-10-10-0.4593`
 - **Type:** Audio Spectrogram Transformer (AST) — ViT-style encoder
 - **Dataset:** CirCor DigiScope Phonocardiogram Dataset
 - **Classes:** 0=Absent, 1=Murmur, 2=Unknown
