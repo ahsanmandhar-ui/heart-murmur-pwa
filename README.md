@@ -26,6 +26,7 @@ A multi-agent heart sound detector using the **Eheart_sound_by_Ahsan_Mandhar.onn
 - Download progress display
 - Audio analysis with waveform and mel views
 - Decision-support output with abstention
+- Audio conversion integrated (decode to 16 kHz mono)
 ## Architecture Overview
 
 ### Model Pipeline Flow
