@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'm2d-v7';
+const CACHE_VERSION = 'm2d-v8';
 const APP_SHELL = ['index.html','manifest.json','css/app.css','css/tokens.css'];
 self.addEventListener('install', (e) => {
   e.waitUntil(caches.open(CACHE_VERSION).then((c) => c.addAll(APP_SHELL)));

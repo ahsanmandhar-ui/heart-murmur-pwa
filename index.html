@@ -45,7 +45,8 @@
         <button id="downloadBtn" class="btn">Download model into browser</button>
         <div class="progress"><div id="progressBar" class="progress-bar"></div></div>
         <div id="downloadStatus" class="status">Not downloaded.</div>
-        <div id="downloadPercent" class="status"></div>
+          <div id="downloadPercent" class="status"></div>
+  <button id="clearCacheBtn" class="btn" style="margin-top:8px;background:rgba(255,255,255,0.12);">Clear cache & reload</button>
       </section>
       <section class="card">
         <p class="title">Analyze Heart Sound</p>
@@ -99,6 +100,19 @@
       finally { btn.disabled=false; }
     }
     btn.addEventListener('click', downloadAndCache);
+    document.getElementById('clearCacheBtn').addEventListener('click', async () => {
+      status.textContent = 'Clearing cache...';
+      if ('serviceWorker' in navigator) {
+        const regs = await navigator.serviceWorker.getRegistrations();
+        await Promise.all(regs.map(r => r.unregister()));
+      }
+      if (window.caches) {
+        const keys = await caches.keys();
+        await Promise.all(keys.map(k => caches.delete(k)));
+      }
+      try { localStorage.clear(); } catch {}
+      location.reload();
+    });
     runBtn.addEventListener('click', async ()=>{
       const file=document.getElementById('audioFile').files[0];
       if(!file){ result.textContent='Select an audio file first.'; return; }
