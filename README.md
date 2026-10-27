@@ -23,14 +23,14 @@ A multi-agent heart sound detector using the **Eheart_sound_by_Ahsan_Mandhar.onn
 ## Installation Guide
 ```mermaid
 flowchart TD
-    START(["🚀 Start"]) --> DL["📦 Download the ZIP"]
-    DL --> UNZIP["📂 Unzip the archive"]
+    START([" Start"]) --> DL[" Download the ZIP"]
+    DL --> UNZIP[" Unzip the archive"]
     UNZIP --> CHECK{"Files present?<br/>setup.bat<br/>run.bat"}
     
-    CHECK -- No --> ERR1["❌ Missing files<br/>Re-download ZIP"]
+    CHECK -- No --> ERR1[" Missing files<br/>Re-download ZIP"]
     ERR1 --> DL
     
-    CHECK -- Yes --> SETUP["⚙️ Run setup.bat"]
+    CHECK -- Yes --> SETUP["️ Run setup.bat"]
     
     subgraph SETUP_BLOCK["setup.bat — Environment Preparation"]
         direction TB
@@ -43,7 +43,7 @@ flowchart TD
     end
     
     SETUP --> S1
-    S5 -- No --> ERR2["❌ Check error log<br/>Retry setup.bat"]
+    S5 -- No --> ERR2[" Check error log<br/>Retry setup.bat"]
     ERR2 --> SETUP
     
     S5 -- Yes --> RUN["▶️ Run run.bat"]
@@ -58,8 +58,8 @@ flowchart TD
     end
     
     RUN --> R1
-    R4 --> BROWSER["🌐 Open browser<br/>http://localhost:8501"]
-    BROWSER --> APP(["✅ App Ready<br/>Upload audio → get prediction"])
+    R4 --> BROWSER[" Open browser<br/>http://localhost:8501"]
+    BROWSER --> APP([" App Ready<br/>Upload audio → get prediction"])
 
     classDef startend fill:#c8e6c9,stroke:#2e7d32,stroke-width:2px,color:#1b5e20;
     classDef action fill:#e3f2fd,stroke:#1565c0,stroke-width:2px,color:#0d47a1;
