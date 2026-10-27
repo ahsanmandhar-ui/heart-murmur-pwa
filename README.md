@@ -20,6 +20,11 @@ A multi-agent heart sound detector using the **Eheart_sound_by_Ahsan_Mandhar.onn
 - **Output:** `[1, 311, 768]` embeddings → 768-dim pooled vector
 - **Classifier:** Linear probe (`probe.json`)
 
+## Download (PC)
+[Download heart-murmur-pc.zip](https://github.com/ahsanmandhar-ui/heart-murmur-pwa/releases/download/pc-v1/heart-murmur-pc.zip)
+
+Unzip and run `setup.bat`, then `run.bat`.
+
 ## Features
 - Multi-agent pipeline (preprocess → inference → decision → safety → visualization)
 - Local model caching
