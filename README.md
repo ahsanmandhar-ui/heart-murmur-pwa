@@ -78,7 +78,7 @@ flowchart TD
 ```
 
 ## Download (PC)
-[Download heart-murmur-pc.zip](https://github.com/ahsanmandhar-ui/heart-murmur-pwa/releases/download/pc-v1/heart-murmur-pc.zip)
+[Download heart-murmur-pc-v3.zip](https://github.com/ahsanmandhar-ui/heart-murmur-pwa/releases/download/pc-v3/heart-murmur-pc-v3.zip)
 
 ## Features
 - Multi-agent pipeline (preprocess → inference → decision → safety → visualization)
