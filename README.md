@@ -87,6 +87,129 @@ flowchart TD
 - Audio analysis with waveform and mel views
 - Decision-support output with abstention
 - Audio conversion integrated (decode to 16 kHz mono)
+## Metrics (100-sample evaluation)
+
+### Confusion Matrix
+```mermaid
+flowchart TB
+    subgraph CM["Confusion Matrix - rows = True, cols = Predicted"]
+        direction LR
+        subgraph ROW1["Actual = POSITIVE"]
+            direction LR
+            TP["TP = 39\nCorrectly detected"]
+            FN["FN = 10\nMissed cases"]
+        end
+        subgraph ROW2["Actual = NEGATIVE"]
+            direction LR
+            FP["FP = 8\nFalse alarms"]
+            TN["TN = 41\nCorrectly rejected"]
+        end
+        HDR["Predicted Pos  |  Predicted Neg"]
+    end
+
+    HDR --> ROW1
+    HDR --> ROW2
+
+    classDef tp fill:#c8e6c9,stroke:#2e7d32,stroke-width:2px,color:#1b5e20;
+    classDef tn fill:#c8e6c9,stroke:#2e7d32,stroke-width:2px,color:#1b5e20;
+    classDef fp fill:#ffcdd2,stroke:#c62828,stroke-width:2px,color:#b71c1c;
+    classDef fn fill:#ffcdd2,stroke:#c62828,stroke-width:2px,color:#b71c1c;
+    classDef hdr fill:#e3f2fd,stroke:#1565c0,stroke-width:2px,color:#0d47a1;
+
+    class TP,TN tp;
+    class FP,FN fp;
+    class HDR hdr;
+```
+
+### Outcome Distribution
+```mermaid
+pie showData
+    title "Outcome Distribution (Evaluated = 98)"
+    "True Positive (39)" : 39
+    "True Negative (41)" : 41
+    "False Positive (8)" : 8
+    "False Negative (10)" : 10
+```
+
+### Derived Metrics
+```mermaid
+flowchart LR
+    subgraph INPUTS["Raw Counts"]
+        TPc["TP = 39"]
+        TNc["TN = 41"]
+        FPc["FP = 8"]
+        FNc["FN = 10"]
+    end
+
+    subgraph CALC["Derived Metrics"]
+        ACC["Accuracy\n(TP+TN)/98\n0.8163"]
+        REC["Recall / Sensitivity\nTP/(TP+FN)\n0.7959"]
+        SPEC["Specificity\nTN/(TN+FP)\n0.8367"]
+        PREC["Precision\nTP/(TP+FP)\n0.8298"]
+        F1["F1 Score\n2*P*R/(P+R)\n0.8125"]
+        AUC["AUC (ROC)\nrank-based\n0.8796"]
+    end
+
+    TPc --> ACC
+    TNc --> ACC
+    TPc --> REC
+    FNc --> REC
+    TNc --> SPEC
+    FPc --> SPEC
+    TPc --> PREC
+    FPc --> PREC
+    PREC --> F1
+    REC --> F1
+    TPc --> AUC
+    TNc --> AUC
+    FPc --> AUC
+    FNc --> AUC
+
+    classDef raw fill:#e1f5fe,stroke:#0277bd,stroke-width:2px,color:#01579b;
+    classDef metric fill:#f1f8e9,stroke:#558b2f,stroke-width:2px,color:#33691e;
+    classDef best fill:#c8e6c9,stroke:#2e7d32,stroke-width:3px,color:#1b5e20;
+
+    class TPc,TNc,FPc,FNc raw;
+    class ACC,REC,SPEC,PREC,F1 metric;
+    class AUC best;
+```
+
+### Metrics Bar Chart
+```mermaid
+xychart-beta
+    title "Performance Metrics (AUC = 0.8796)"
+    x-axis ["Accuracy", "Recall", "Specificity", "Precision", "F1", "AUC"]
+    y-axis "Score" 0 --> 1
+    bar [0.8163, 0.7959, 0.8367, 0.8298, 0.8125, 0.8796]
+```
+
+### Evaluation Flow
+```mermaid
+sequenceDiagram
+    autonumber
+    participant O as Orchestrator
+    participant M as AST Model
+    participant D as DecisionAgent
+    participant S as SafetyAgent
+    participant E as Evaluator
+
+    loop Over 100 samples
+        O->>M: audio -> embedding
+        M-->>O: 768-dim
+        O->>D: classify
+        D-->>O: Present / Absent / Uncertain
+        O->>S: guardrail
+        S-->>O: final label
+        O->>E: record (pred, truth)
+    end
+
+    Note over E: 2 uncertain -> excluded
+    Note over E: 98 evaluated
+    E-->>E: TP=39 TN=41 FP=8 FN=10
+    E-->>E: compute Accuracy, Recall, Specificity, Precision, F1, AUC
+    E-->>O: Final report
+```
+
 ## Architecture Overview
 
 ### Model Pipeline Flow
