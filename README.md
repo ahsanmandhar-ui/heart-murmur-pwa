@@ -37,7 +37,7 @@ flowchart TD
         S1["Check Python installed"]
         S2["Create virtual environment<br/>(venv)"]
         S3["Install Python dependencies<br/>(pip install -r requirements.txt)"]
-        S4["Download M2D model<br/>(ONNX weights + probe.json)"]
+        S4["Download AST model (Eheart_sound_by_Ahsan_Mandhar.onnx)<br/>(ONNX weights + probe.json)"]
         S5{"Setup<br/>successful?"}
         S1 --> S2 --> S3 --> S4 --> S5
     end
