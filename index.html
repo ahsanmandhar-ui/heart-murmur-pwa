@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
@@ -140,5 +140,23 @@
     });
     (async ()=>{ try{ session=await loadModel(); if(session) status.textContent='Model ready (cached).'; }catch{} })();
   </script>
-</body>
+  <script>
+    (async () => {
+      try {
+        if (localStorage.getItem('appVersion') !== 'v10') {
+          if ('serviceWorker' in navigator) {
+            const regs = await navigator.serviceWorker.getRegistrations();
+            await Promise.all(regs.map(r => r.unregister()));
+          }
+          if (window.caches) {
+            const keys = await caches.keys();
+            await Promise.all(keys.map(k => caches.delete(k)));
+          }
+          localStorage.setItem('appVersion', 'v10');
+          location.reload();
+        }
+      } catch (e) {}
+    })();
+  </script></body>
 </html>
+
