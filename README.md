@@ -1,4 +1,4 @@
-# Multi-Agent Heart Sound Detector
+# Agentic Heart Sound Detector
 
 ![Heart Sound Detector Logo](logo.svg)
 
