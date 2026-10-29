@@ -1,4 +1,4 @@
-# Agentic Heart Sound Detector
+﻿# Agentic Heart Sound Detector
 
 ![Heart Sound Detector Logo](logo.svg)
 
@@ -7,15 +7,15 @@ A multi-agent heart sound detector using the **Eheart_sound_by_Ahsan_Mandhar.onn
 ## Model
 - **Model file:** `Eheart_sound_by_Ahsan_Mandhar.onnx`
 - **Base pretrained:** `MIT/ast-finetuned-audioset-10-10-0.4593`
-- **Type:** Audio Spectrogram Transformer (AST) — ViT-style encoder
+- **Type:** Audio Spectrogram Transformer (AST) â€” ViT-style encoder
 - **Dataset:** CirCor DigiScope Phonocardiogram Dataset
 - **Classes:** 0=Absent, 1=Murmur, 2=Unknown
 - **Precision:** INT8 (ONNX)
 - **Input:** `[1, 1, 80, 1001]` log-mel spectrogram
-- **Patch size:** 16×16 → 310 patches + 1 CLS token = 311 tokens
+- **Patch size:** 16Ã—16 â†’ 310 patches + 1 CLS token = 311 tokens
 - **Hidden dimension:** 768
 - **Encoder layers:** 12
-- **Output:** `[1, 311, 768]` embeddings → 768-dim pooled vector
+- **Output:** `[1, 311, 768]` embeddings â†’ 768-dim pooled vector
 - **Classifier:** Linear probe (`probe.json`)
 
 ## Installation Guide
@@ -28,9 +28,9 @@ flowchart TD
     CHECK -- No --> ERR1[" Missing files<br/>Re-download ZIP"]
     ERR1 --> DL
     
-    CHECK -- Yes --> SETUP["️ Run setup.bat"]
+    CHECK -- Yes --> SETUP["ï¸ Run setup.bat"]
     
-    subgraph SETUP_BLOCK["setup.bat — Environment Preparation"]
+    subgraph SETUP_BLOCK["setup.bat â€” Environment Preparation"]
         direction TB
         S1["Check Python installed"]
         S2["Create virtual environment<br/>(venv)"]
@@ -44,9 +44,9 @@ flowchart TD
     S5 -- No --> ERR2[" Check error log<br/>Retry setup.bat"]
     ERR2 --> SETUP
     
-    S5 -- Yes --> RUN["▶️ Run run.bat"]
+    S5 -- Yes --> RUN["â–¶ï¸ Run run.bat"]
     
-    subgraph RUN_BLOCK["run.bat — Application Launch"]
+    subgraph RUN_BLOCK["run.bat â€” Application Launch"]
         direction TB
         R1["Activate virtual environment"]
         R2["Start Streamlit server"]
@@ -57,7 +57,7 @@ flowchart TD
     
     RUN --> R1
     R4 --> BROWSER[" Open browser<br/>http://localhost:8501"]
-    BROWSER --> APP([" App Ready<br/>Upload audio → get prediction"])
+    BROWSER --> APP([" App Ready<br/>Upload audio â†’ get prediction"])
 
     classDef startend fill:#c8e6c9,stroke:#2e7d32,stroke-width:2px,color:#1b5e20;
     classDef action fill:#e3f2fd,stroke:#1565c0,stroke-width:2px,color:#0d47a1;
@@ -79,7 +79,7 @@ flowchart TD
 [Download heart-murmur-pc-v4.zip](https://github.com/ahsanmandhar-ui/heart-murmur-pwa/releases/download/pc-v4/heart-murmur-pc-v4.zip)
 
 ## Features
-- Multi-agent pipeline (preprocess → inference → decision → safety → visualization)
+- Multi-agent pipeline (preprocess â†’ inference â†’ decision â†’ safety â†’ visualization)
 - Local model caching
 - Download progress display
 - Audio analysis with waveform and mel views
@@ -270,8 +270,16 @@ classDiagram
     Orchestrator --> VisualizationAgent
 ```
 
+
+## Provenance & License
+- **Base model:** MIT/ast-finetuned-audioset-10-10-0.4593 (MIT License)
+- **Dataset:** CirCor DigiScope Phonocardiogram Dataset (ODC Attribution License)
+- **Fine-tuning & quantization:** Ahsan Mandhar
+- **License:** MIT (see LICENSE file)
+- **Attribution:** Original copyright preserved; modifications copyright (c) 2026 Ahsan Mandhar
 ## License
 All rights reserved. No permission is granted to copy, reproduce, distribute, modify, or use this software, model, or associated files without prior written permission.
 
 ## Contact
 Email: ahsanmandhar@gmail.com
+
